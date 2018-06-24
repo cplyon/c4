@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python3
 
 """
 Simple Connect Four game.
@@ -8,6 +8,7 @@ Date: 2015-09-19
 """
 
 import sys
+
 
 class Colour:
     """
@@ -40,8 +41,8 @@ class Board:
     def __init__(self, rows=None, columns=None):
         self.rows = rows if rows else Board.DEFAULT_ROWS
         self.columns = columns if columns else Board.DEFAULT_COLUMNS
-        self._board = [[Colour.NONE for x in range(self.columns)] \
-                for x in range(self.rows)]
+        self._board = [[Colour.NONE for x in range(self.columns)]
+                       for x in range(self.rows)]
         self.filled_cells = 0
 
     def __getitem__(self, key):
@@ -100,8 +101,8 @@ class Board:
         on the board in row.
         Return False otherwise.
         """
-        # need to check entire diagonal, since a piece could have been added in the
-        # middle of a streak
+        # need to check entire diagonal, since a piece could have been added in
+        # the middle of a streak
         streak_length = 0
         r = row - min(row, column)
         c = column - min(row, column)
@@ -122,8 +123,8 @@ class Board:
         on the board in row.
         Return False otherwise.
         """
-        # need to check entire diagonal, since a piece could have been added in the
-        # middle of a streak
+        # need to check entire diagonal, since a piece could have been added in
+        # the middle of a streak
         streak_length = 0
         r = row - min(row, self.columns - column - 1)
         c = column + min(row, self.columns - column - 1)
@@ -147,7 +148,7 @@ class Board:
         streak_length = 0
         # need to check entire row, since a piece could have been added in the
         # middle of a streak
-        for c in range(self.columns):        
+        for c in range(self.columns):
             if self._board[row][c] is colour:
                 streak_length += 1
                 if streak_length == length:
@@ -232,11 +233,11 @@ class Game:
         TARGET_LENGTH = 4
         if self.board.check_horizontal(colour, row, TARGET_LENGTH) or \
                 self.board.check_vertical(colour, row, column,
-                        TARGET_LENGTH) or \
-                self.board.check_top_left_to_bottom_right(colour, row,
-                        column,TARGET_LENGTH) or \
-                self.board.check_top_right_to_bottom_left(colour, row,
-                        column,TARGET_LENGTH):
+                                          TARGET_LENGTH) or \
+                self.board.check_top_left_to_bottom_right(colour, row, column,
+                                                          TARGET_LENGTH) or \
+                self.board.check_top_right_to_bottom_left(colour, row, column,
+                                                          TARGET_LENGTH):
             return self.turn.name
 
         if self.board.is_full():
@@ -252,20 +253,20 @@ def main(argv=None):
 
     # game loop
     while game.winner is None:
-        print 
-        print game.board
-        print "%s choose a column:" % game.turn.name
+        print()
+        print(game.board)
+        print("%s choose a column:" % game.turn.name)
         column = sys.stdin.readline()
         while not game.play(column):
-            print "Invalid column. Try again"
+            print("Invalid column. Try again")
             column = sys.stdin.readline()
-    print
-    print game.board
+    print()
+    print(game.board)
     if game.winner == Game.TIE:
-        print Game.TIE
+        print(Game.TIE)
     else:
-        print "Winner is %s!" % game.winner
-    print
+        print("Winner is %s!" % game.winner)
+    print()
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python3
 
 """
 Tests for simple Connect Four game.
@@ -31,37 +31,37 @@ class GameTest(unittest.TestCase):
 
     def test_play_empty_board(self):
         game = Game()
-        self.assertEquals(game.board[game.board.rows-1][0], Colour.NONE)
+        self.assertEqual(game.board[game.board.rows-1][0], Colour.NONE)
         self.assertTrue(game.play(1))
-        self.assertEquals(game.board[game.board.rows-1][0], Colour.PLAYER_1)
+        self.assertEqual(game.board[game.board.rows-1][0], Colour.PLAYER_1)
 
     def test_play_turn_ends(self):
         game = Game()
-        self.assertEquals(game.turn, game.player1)
+        self.assertEqual(game.turn, game.player1)
         self.assertTrue(game.play(1))
-        self.assertEquals(game.turn, game.player2)
+        self.assertEqual(game.turn, game.player2)
 
     def test_play_fill_column(self):
         game = Game()
         for row in reversed(range(game.board.rows)):
             self.assertTrue(game.play(1))
             if row % 2 == 0:
-                self.assertEquals(game.board[row][0], Colour.PLAYER_2)
+                self.assertEqual(game.board[row][0], Colour.PLAYER_2)
             else:
-                self.assertEquals(game.board[row][0], Colour.PLAYER_1)
+                self.assertEqual(game.board[row][0], Colour.PLAYER_1)
 
     def test_play_empty_board_winner(self):
         game = Game()
-        self.assertEquals(game.winner, None)
+        self.assertEqual(game.winner, None)
         self.assertTrue(game.play(1))
-        self.assertEquals(game.winner, None)
+        self.assertEqual(game.winner, None)
 
     def test_play_player1_winner(self):
         game = Game()
         for r in range(4):
             game.play(1)
             game.play(2)
-        self.assertEquals(game.winner, game.player1.name)
+        self.assertEqual(game.winner, game.player1.name)
 
     def test_determine_winner_empty_board(self):
         game = Game()
@@ -84,7 +84,7 @@ class GameTest(unittest.TestCase):
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0,
             game.board.columns - 1))
         game.board[3][game.board.columns - 1] = Colour.PLAYER_1
-        self.assertEquals(game.determine_winner(Colour.PLAYER_1, 0,
+        self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0,
             game.board.columns - 1), Player.PLAYER_1)
 
     def test_determine_winner_horizontal(self):
@@ -99,7 +99,7 @@ class GameTest(unittest.TestCase):
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1,
             game.board.rows - 1, 0))
         game.board[game.board.rows - 1][3] = Colour.PLAYER_1
-        self.assertEquals(game.determine_winner(Colour.PLAYER_1,
+        self.assertEqual(game.determine_winner(Colour.PLAYER_1,
             game.board.rows - 1, 0), Player.PLAYER_1)
 
     def test_determine_winner_diagonal_tl_br(self):
@@ -111,7 +111,7 @@ class GameTest(unittest.TestCase):
         game.board[2][2] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0, 0))
         game.board[3][3] = Colour.PLAYER_1
-        self.assertEquals(game.determine_winner(Colour.PLAYER_1, 0, 0),
+        self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0, 0),
                 Player.PLAYER_1)
 
     def test_determine_winner_diagonal_tr_bl(self):
@@ -123,7 +123,7 @@ class GameTest(unittest.TestCase):
         game.board[2][1] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0, 3))
         game.board[3][0] = Colour.PLAYER_1
-        self.assertEquals(game.determine_winner(Colour.PLAYER_1, 0, 3),
+        self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0, 3),
                 Player.PLAYER_1)
 
 
@@ -137,7 +137,7 @@ class BoardTest(unittest.TestCase):
         for c in range(board.columns):
             for r in range(board.rows):
                 board.drop_piece(Colour.PLAYER_1, c)
-        self.assertEquals(board.filled_cells, board.rows * board.columns)
+        self.assertEqual(board.filled_cells, board.rows * board.columns)
         self.assertTrue(board.is_full())
         
     def test_is_column_full_negative(self):
