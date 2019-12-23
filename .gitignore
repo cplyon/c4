@@ -1,4 +1,6 @@
 *.pyc
 *.swp
 *.vscode
+.coverage
 __pycache__/
+htmlcov/
