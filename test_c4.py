@@ -49,6 +49,7 @@ class GameTest(unittest.TestCase):
                 self.assertEqual(game.board[row][0], Colour.PLAYER_2)
             else:
                 self.assertEqual(game.board[row][0], Colour.PLAYER_1)
+        self.assertFalse(game.play(1))
 
     def test_play_empty_board_winner(self):
         game = Game()
@@ -131,7 +132,7 @@ class BoardTest(unittest.TestCase):
     def test_is_full_negative(self):
         board = Board()
         self.assertFalse(board.is_full())
-        
+
     def test_is_full_positive(self):
         board = Board()
         for c in range(board.columns):
@@ -139,17 +140,17 @@ class BoardTest(unittest.TestCase):
                 board.drop_piece(Colour.PLAYER_1, c)
         self.assertEqual(board.filled_cells, board.rows * board.columns)
         self.assertTrue(board.is_full())
-        
+
     def test_is_column_full_negative(self):
         board = Board()
         self.assertFalse(board.is_column_full(0))
-        
+
     def test_is_column_full_positive(self):
         board = Board()
         for r in range(board.rows):
             board.drop_piece(Colour.PLAYER_1, 0)
         self.assertTrue(board.is_column_full(0))
-        
+
     def test_drop_piece_empty_column(self):
         board = Board()
         self.assertEqual(board.drop_piece(Colour.PLAYER_1, 0), board.rows - 1)

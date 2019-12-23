@@ -82,9 +82,6 @@ class Board:
         Return the row that was coloured.
         Return None if column is full.
         """
-        if self.is_column_full(column):
-            return None
-
         for r in reversed(range(self.rows)):
             if self._board[r][column] is Colour.NONE:
                 # we found the lowest empty cell
@@ -92,7 +89,6 @@ class Board:
                 self.filled_cells += 1
                 return r
 
-        # We should never get here with a valid board
         return None
 
     def check_top_left_to_bottom_right(self, colour, row, column, length):
