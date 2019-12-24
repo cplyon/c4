@@ -248,14 +248,17 @@ def main(argv=None):
     game = Game()
 
     # game loop
-    while game.winner is None:
+    while True:
         print()
         print(game.board)
         print("%s choose a column:" % game.turn.name)
-        column = sys.stdin.readline()
-        while not game.play(column):
+        input = sys.stdin.readline()
+        if str(input).lower() == 'q\n':
+            sys.exit(0)
+        if not game.play(input):
             print("Invalid column. Try again")
-            column = sys.stdin.readline()
+        if game.winner:
+            break
     print()
     print(game.board)
     if game.winner == Game.TIE:
