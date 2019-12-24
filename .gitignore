@@ -3,4 +3,7 @@
 *.vscode
 .coverage
 __pycache__/
+build/
+c4.egg-info/
+dist/
 htmlcov/
