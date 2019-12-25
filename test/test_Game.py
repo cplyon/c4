@@ -8,9 +8,9 @@ Date: 2015-09-19
 """
 
 import logging
+import sys
 import unittest
 
-import c4.c4
 from c4.c4 import Game
 from c4.c4 import Colour
 from c4.c4 import Player
@@ -75,38 +75,39 @@ class GameTest(unittest.TestCase):
 
     def test_determine_winner_full_board(self):
         game = Game()
-        game.board.is_full = lambda : True
-        self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0, 0), Game.TIE)
+        game.board.is_full = lambda: True
+        self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0, 0),
+                         Game.TIE)
 
     def test_determine_winner_vertical(self):
         game = Game()
         game.board[0][game.board.columns - 1] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0,
-            game.board.columns - 1))
+                          game.board.columns - 1))
         game.board[1][game.board.columns - 1] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0,
-            game.board.columns - 1))
+                          game.board.columns - 1))
         game.board[2][game.board.columns - 1] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0,
-            game.board.columns - 1))
+                          game.board.columns - 1))
         game.board[3][game.board.columns - 1] = Colour.PLAYER_1
         self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0,
-            game.board.columns - 1), Player.PLAYER_1)
+                         game.board.columns - 1), Player.PLAYER_1)
 
     def test_determine_winner_horizontal(self):
         game = Game()
         game.board[game.board.rows - 1][0] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1,
-            game.board.rows - 1, 0))
+                          game.board.rows - 1, 0))
         game.board[game.board.rows - 1][1] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1,
-            game.board.rows - 1, 0))
+                          game.board.rows - 1, 0))
         game.board[game.board.rows - 1][2] = Colour.PLAYER_1
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1,
-            game.board.rows - 1, 0))
+                          game.board.rows - 1, 0))
         game.board[game.board.rows - 1][3] = Colour.PLAYER_1
         self.assertEqual(game.determine_winner(Colour.PLAYER_1,
-            game.board.rows - 1, 0), Player.PLAYER_1)
+                         game.board.rows - 1, 0), Player.PLAYER_1)
 
     def test_determine_winner_diagonal_tl_br(self):
         game = Game()
@@ -118,7 +119,7 @@ class GameTest(unittest.TestCase):
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0, 0))
         game.board[3][3] = Colour.PLAYER_1
         self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0, 0),
-                Player.PLAYER_1)
+                         Player.PLAYER_1)
 
     def test_determine_winner_diagonal_tr_bl(self):
         game = Game()
@@ -130,7 +131,7 @@ class GameTest(unittest.TestCase):
         self.assertIsNone(game.determine_winner(Colour.PLAYER_1, 0, 3))
         game.board[3][0] = Colour.PLAYER_1
         self.assertEqual(game.determine_winner(Colour.PLAYER_1, 0, 3),
-                Player.PLAYER_1)
+                         Player.PLAYER_1)
 
 
 if __name__ == "__main__":
