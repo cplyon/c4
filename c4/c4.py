@@ -10,6 +10,7 @@ Date: 2015-09-19
 import sys
 from enum import Enum, auto
 
+
 class Colour(Enum):
     """
     Enum of possible cell values on the game board.
