@@ -252,10 +252,10 @@ def main(argv=None):
         print()
         print(game.board)
         print("%s choose a column:" % game.turn.name)
-        input = sys.stdin.readline()
-        if str(input).lower() == 'q\n':
+        user_input = sys.stdin.readline().strip()
+        if str(user_input).lower() == 'q':
             sys.exit(0)
-        if not game.play(input):
+        if not game.play(user_input):
             print("Invalid column. Try again")
         if game.winner:
             break
