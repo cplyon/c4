@@ -8,15 +8,15 @@ Date: 2015-09-19
 """
 
 import sys
+from enum import Enum, auto
 
-
-class Colour:
+class Colour(Enum):
     """
-    Enum-like class for possible cell values on the game board.
+    Enum of possible cell values on the game board.
     """
-    NONE = 0
-    PLAYER_1 = 1
-    PLAYER_2 = 2
+    NONE = auto()
+    PLAYER_1 = auto()
+    PLAYER_2 = auto()
 
 
 class Player:
