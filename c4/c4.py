@@ -8,16 +8,16 @@ Date: 2015-09-19
 """
 
 import sys
-from enum import Enum, auto
+from enum import IntEnum
 
 
-class Colour(Enum):
+class Colour(IntEnum):
     """
     Enum of possible cell values on the game board.
     """
-    NONE = auto()
-    PLAYER_1 = auto()
-    PLAYER_2 = auto()
+    NONE = 0
+    PLAYER_1 = 1
+    PLAYER_2 = 2
 
 
 class Player:
@@ -27,7 +27,7 @@ class Player:
     PLAYER_1 = "Player 1"
     PLAYER_2 = "Player 2"
 
-    def __init__(self, name, colour):
+    def __init__(self, name: str, colour: Colour):
         self.name = name
         self.colour = colour
 
@@ -36,48 +36,47 @@ class Board:
     """
     The game board, with customizable size
     """
-    DEFAULT_COLUMNS = 7
-    DEFAULT_ROWS = 6
 
-    def __init__(self, rows=None, columns=None):
-        self.rows = rows if rows else Board.DEFAULT_ROWS
-        self.columns = columns if columns else Board.DEFAULT_COLUMNS
+    def __init__(self, rows: int, columns: int, goal: int):
+        self.rows = rows
+        self.columns = columns
         self._board = [[Colour.NONE for x in range(self.columns)]
                        for x in range(self.rows)]
         self.filled_cells = 0
+        self.goal = goal
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> Colour:
         """
         Allow indexing into the board, like a 2D array
         """
         return self._board[key]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Return a string representation of the board.
         """
         printable_board = ""
         for r in range(self.rows):
             for c in range(self.columns):
-                printable_board += "%s " % self._board[r][c]
+                printable_board += "%d " % self._board[r][c]
             printable_board += "\n"
         return printable_board
 
-    def is_full(self):
+    def is_full(self) -> bool:
         """
         Return True if all cells on board have been filled.
         Return False otherwise.
         """
         return (self.filled_cells == self.rows * self.columns)
 
-    def is_column_full(self, column):
+    def is_column_full(self, column: int) -> bool:
         """
         Return True if top-most cell in column is not NONE
         Return False otherwise
         """
         return self._board[0][column] is not Colour.NONE
 
-    def drop_piece(self, colour, column):
+    def drop_piece(self, colour: Colour, column: int) -> int:
         """
         Set the lowest empty cell in column to colour.
         Return the row that was coloured.
@@ -92,7 +91,8 @@ class Board:
 
         return None
 
-    def check_top_left_to_bottom_right(self, colour, row, column, length):
+    def check_top_left_to_bottom_right(self, colour: Colour,
+                                       row: int, column: int) -> bool:
         """
         Return True if there exists a diagonal streak of length or more cells
         on the board in row.
@@ -106,7 +106,7 @@ class Board:
         while r < self.rows and c < self.columns:
             if self._board[r][c] is colour:
                 streak_length += 1
-                if streak_length >= length:
+                if streak_length >= self.goal:
                     return True
             else:
                 streak_length = 0
@@ -114,7 +114,8 @@ class Board:
             c += 1
         return False
 
-    def check_top_right_to_bottom_left(self, colour, row, column, length):
+    def check_top_right_to_bottom_left(self, colour: Colour,
+                                       row: int, column: int) -> bool:
         """
         Return True if there exists a diagonal streak of length or more cells
         on the board in row.
@@ -128,7 +129,7 @@ class Board:
         while r < self.rows and c >= 0:
             if self._board[r][c] is colour:
                 streak_length += 1
-                if streak_length == length:
+                if streak_length == self.goal:
                     return True
             else:
                 streak_length = 0
@@ -136,7 +137,7 @@ class Board:
             c -= 1
         return False
 
-    def check_horizontal(self, colour, row, length):
+    def check_horizontal(self, colour: Colour, row: int) -> bool:
         """
         Return True if there exists a horizontal streak of length or more cells
         on the board in row.
@@ -148,25 +149,30 @@ class Board:
         for c in range(self.columns):
             if self._board[row][c] is colour:
                 streak_length += 1
-                if streak_length == length:
+                if streak_length == self.goal:
                     return True
             else:
                 streak_length = 0
         return False
 
-    def check_vertical(self, colour, row, column, length):
+    def check_vertical(self, colour: Colour, row: int, column: int) -> bool:
         """
         Return True if there exists a vertical streak of length or more cells
         on the board in column starting at row.
         Return False otherwise.
         """
         streak_length = 1
+        # if the piece is less than goal cells away from the bottom, we know
+        # there's no winner yet
+        if self.rows - row < self.goal:
+            return False
+
         # only need to check from this row down, since this piece is guaranteed
         # to be on top because of gravity
         for r in range(row + 1, self.rows):
             if self._board[r][column] is colour:
                 streak_length += 1
-                if streak_length == length:
+                if streak_length == self.goal:
                     return True
             else:
                 # we can bail as soon as we find a cell not the target colour
@@ -179,15 +185,18 @@ class Game:
     Contains turn logic and determines winner.
     """
     TIE = "TIE GAME!"
+    DEFAULT_COLUMNS = 7
+    DEFAULT_ROWS = 6
+    GOAL = 4
 
     def __init__(self):
         self.player1 = Player(Player.PLAYER_1, Colour.PLAYER_1)
         self.player2 = Player(Player.PLAYER_2, Colour.PLAYER_2)
-        self.board = Board()
+        self.board = Board(self.DEFAULT_ROWS, self.DEFAULT_COLUMNS, self.GOAL)
         self.winner = None
         self.turn = self.player1
 
-    def play(self, column):
+    def play(self, column: int) -> bool:
         """
         Main game logic. Place a piece on the board, determine a winner
         and end the current player's turn.
@@ -219,7 +228,8 @@ class Game:
 
         return True
 
-    def determine_winner(self, colour, row, column):
+    def determine_winner(self, colour: Colour, row: int,
+                         column: int) -> Player:
         """
         Return the player name who has created a streak of four or more either
         horizontally, vertically or diagonally.
@@ -227,14 +237,11 @@ class Game:
         Return None if game is not over.
         """
 
-        TARGET_LENGTH = 4
-        if self.board.check_horizontal(colour, row, TARGET_LENGTH) or \
-                self.board.check_vertical(colour, row, column,
-                                          TARGET_LENGTH) or \
-                self.board.check_top_left_to_bottom_right(colour, row, column,
-                                                          TARGET_LENGTH) or \
-                self.board.check_top_right_to_bottom_left(colour, row, column,
-                                                          TARGET_LENGTH):
+        if self.board.check_horizontal(colour, row) or \
+                self.board.check_vertical(colour, row, column) or \
+                self.board.check_top_left_to_bottom_right(colour, row,
+                                                          column) or \
+                self.board.check_top_right_to_bottom_left(colour, row, column):
             return self.turn.name
 
         if self.board.is_full():
