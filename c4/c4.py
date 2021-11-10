@@ -8,6 +8,7 @@ Date: 2015-09-19
 """
 
 import sys
+from dataclasses import dataclass
 from enum import IntEnum
 
 
@@ -20,16 +21,15 @@ class Colour(IntEnum):
     PLAYER_2 = 2
 
 
+@dataclass
 class Player:
     """
     Encapsulates properties of a player.
     """
     PLAYER_1 = "Player 1"
     PLAYER_2 = "Player 2"
-
-    def __init__(self, name: str, colour: Colour):
-        self.name = name
-        self.colour = colour
+    name: str
+    colour: Colour
 
 
 class Board:
@@ -56,9 +56,9 @@ class Board:
         Return a string representation of the board.
         """
         printable_board = ""
-        for r in range(self.rows):
-            for c in range(self.columns):
-                printable_board += "%d " % self._board[r][c]
+        for row in range(self.rows):
+            for col in range(self.columns):
+                printable_board += f"{self._board[row][col]} "
             printable_board += "\n"
         return printable_board
 
@@ -67,7 +67,7 @@ class Board:
         Return True if all cells on board have been filled.
         Return False otherwise.
         """
-        return (self.filled_cells == self.rows * self.columns)
+        return self.filled_cells == (self.rows * self.columns)
 
     def is_column_full(self, column: int) -> bool:
         """
@@ -82,12 +82,12 @@ class Board:
         Return the row that was coloured.
         Return None if column is full.
         """
-        for r in reversed(range(self.rows)):
-            if self._board[r][column] is Colour.NONE:
+        for row in reversed(range(self.rows)):
+            if self._board[row][column] is Colour.NONE:
                 # we found the lowest empty cell
-                self._board[r][column] = colour
+                self._board[row][column] = colour
                 self.filled_cells += 1
-                return r
+                return row
 
         return None
 
@@ -146,8 +146,8 @@ class Board:
         streak_length = 0
         # need to check entire row, since a piece could have been added in the
         # middle of a streak
-        for c in range(self.columns):
-            if self._board[row][c] is colour:
+        for col in range(self.columns):
+            if self._board[row][col] is colour:
                 streak_length += 1
                 if streak_length == self.goal:
                     return True
@@ -252,14 +252,17 @@ class Game:
         return None
 
 
-def main(argv=None):
+def main():
+    """
+    Entry point for the game
+    """
     game = Game()
 
     # game loop
     while True:
         print()
         print(game.board)
-        print("%s choose a column:" % game.turn.name)
+        print(f"{game.turn.name} choose a column:")
         user_input = sys.stdin.readline().strip()
         if str(user_input).lower() == 'q':
             sys.exit(0)
@@ -272,9 +275,9 @@ def main(argv=None):
     if game.winner == Game.TIE:
         print(Game.TIE)
     else:
-        print("Winner is %s!" % game.winner)
+        print("Winner is {game.winner}!")
     print()
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())
