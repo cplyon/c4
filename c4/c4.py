@@ -16,6 +16,7 @@ class Colour(IntEnum):
     """
     Enum of possible cell values on the game board.
     """
+
     NONE = 0
     PLAYER_1 = 1
     PLAYER_2 = 2
@@ -26,6 +27,7 @@ class Player:
     """
     Encapsulates properties of a player.
     """
+
     PLAYER_1 = "Player 1"
     PLAYER_2 = "Player 2"
     name: str
@@ -40,8 +42,9 @@ class Board:
     def __init__(self, rows: int, columns: int, goal: int):
         self.rows = rows
         self.columns = columns
-        self._board = [[Colour.NONE for x in range(self.columns)]
-                       for x in range(self.rows)]
+        self._board = [
+            [Colour.NONE for x in range(self.columns)] for x in range(self.rows)
+        ]
         self.filled_cells = 0
         self.goal = goal
 
@@ -91,8 +94,9 @@ class Board:
 
         return None
 
-    def check_top_left_to_bottom_right(self, colour: Colour,
-                                       row: int, column: int) -> bool:
+    def check_top_left_to_bottom_right(
+        self, colour: Colour, row: int, column: int
+    ) -> bool:
         """
         Return True if there exists a diagonal streak of length or more cells
         on the board in row.
@@ -114,8 +118,9 @@ class Board:
             c += 1
         return False
 
-    def check_top_right_to_bottom_left(self, colour: Colour,
-                                       row: int, column: int) -> bool:
+    def check_top_right_to_bottom_left(
+        self, colour: Colour, row: int, column: int
+    ) -> bool:
         """
         Return True if there exists a diagonal streak of length or more cells
         on the board in row.
@@ -184,6 +189,7 @@ class Game:
     """
     Contains turn logic and determines winner.
     """
+
     TIE = "TIE GAME!"
     DEFAULT_COLUMNS = 7
     DEFAULT_ROWS = 6
@@ -228,8 +234,7 @@ class Game:
 
         return True
 
-    def determine_winner(self, colour: Colour, row: int,
-                         column: int) -> Player:
+    def determine_winner(self, colour: Colour, row: int, column: int) -> Player:
         """
         Return the player name who has created a streak of four or more either
         horizontally, vertically or diagonally.
@@ -237,11 +242,12 @@ class Game:
         Return None if game is not over.
         """
 
-        if self.board.check_horizontal(colour, row) or \
-                self.board.check_vertical(colour, row, column) or \
-                self.board.check_top_left_to_bottom_right(colour, row,
-                                                          column) or \
-                self.board.check_top_right_to_bottom_left(colour, row, column):
+        if (
+            self.board.check_horizontal(colour, row)
+            or self.board.check_vertical(colour, row, column)
+            or self.board.check_top_left_to_bottom_right(colour, row, column)
+            or self.board.check_top_right_to_bottom_left(colour, row, column)
+        ):
             return self.turn.name
 
         if self.board.is_full():
@@ -264,7 +270,7 @@ def main():
         print(game.board)
         print(f"{game.turn.name} choose a column:")
         user_input = sys.stdin.readline().strip()
-        if str(user_input).lower() == 'q':
+        if str(user_input).lower() == "q":
             sys.exit(0)
         if not game.play(user_input):
             print("Invalid column. Try again")
