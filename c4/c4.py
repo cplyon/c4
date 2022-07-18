@@ -281,7 +281,7 @@ def main():
     if game.winner == Game.TIE:
         print(Game.TIE)
     else:
-        print("Winner is {game.winner}!")
+        print(f"Winner is {game.winner}!")
     print()
 
 
